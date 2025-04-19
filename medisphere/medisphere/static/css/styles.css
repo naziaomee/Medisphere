@@ -1,0 +1,22 @@
+#specialist-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.specialist-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    background-color: #3498DB;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.specialist-btn:hover {
+    background-color: #2980B9;
+}

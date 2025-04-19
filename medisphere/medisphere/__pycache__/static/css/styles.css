@@ -1,0 +1,84 @@
+/* General styling for the page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* Header section */
+header {
+    background-color:rgb(89, 209, 171);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+}
+
+/* Styling for the specialist section */
+#specialist-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+#specialist-list li {
+    list-style-type: none;
+    width: 200px;
+    margin: 10px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+#specialist-list li:hover {
+    transform: scale(1.05);
+}
+
+/* Styling the text inside the list items */
+#specialist-list li p {
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+}
+
+#specialist-list li a {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    background-color:rgb(83, 198, 208);
+    color: white;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    font-weight: bold;
+}
+
+/* Additional details section */
+section {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #e6f7ff;
+    border-radius: 8px;
+}
+
+section p {
+    font-size: 16px;
+    color: #444;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+    #specialist-list {
+        flex-direction: column;
+    }
+}
