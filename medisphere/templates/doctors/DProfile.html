@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="{% url 'dermatologist_list' %}" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Dermatologists
+</a>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-photo-wrapper">
+            {% if dermatologist.image %}
+                <img src="{{ dermatologist.image.url }}" alt="{{ dermatologist.name }}" class="profile-photo">
+            {% else %}
+                <div class="profile-photo placeholder-photo">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-title">{{ dermatologist.name }}</h1>
+            <p class="specialty-title">{{ dermatologist.specialty }} <i class="fas fa-hand-holding-medical"></i></p>
+        </div>
+    </div>
+
+    <div class="profile-details-grid">
+        <div class="info-card bio-card">
+            <h2><i class="fas fa-book-reader"></i> About</h2>
+            <p>{{ dermatologist.bio }}</p>
+        </div>
+
+        <div class="info-card contact-card">
+            <h2><i class="fas fa-info-circle"></i> Appointment Details</h2>
+            <ul class="details-list">
+                <li><i class="fas fa-university"></i> <strong>Medical College:</strong> {{ dermatologist.medical_college }}</li>
+                <li><i class="fas fa-clock"></i> <strong>Appointment Time:</strong> {{ dermatologist.appointment_time }}</li>
+                <li><i class="fas fa-wallet"></i> <strong>Payment Method:</strong> {{ dermatologist.payment_method }}</li>
+                <li><i class="fas fa-dollar-sign"></i> <strong>Visit Fee:</strong> {{ dermatologist.visit_fee }} BDT</li>
+            </ul>
+        </div>
+
+        <div class="booking-card">
+            <h2><i class="fas fa-calendar-check"></i> Book an Appointment</h2>
+            <p class="booking-note">Fill out the form below to secure your spot.</p>
+
+            <form method="post" class="appointment-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="patient_name">Your Name:</label>
+                    <input type="text" id="patient_name" name="patient_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="appointment_date">Preferred Date:</label>
+                    <input type="date" id="appointment_date" name="appointment_date" required>
+                </div>
+                
+                <button type="submit" class="book-btn">Book Appointment</button>
+            </form>
+
+            {% if appointment_success %}
+                <p class="success-message"><i class="fas fa-check-circle"></i> Appointment Booked Successfully!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --bg-color: #f4f7f9;
+        --card-color: #ffffff;
+        --primary-blue: #0077c9;
+        --primary-blue-dark: #005f9c;
+        --accent-teal: #1abc9c;
+        --text-dark: #2c3e50;
+        --text-muted: #7f8c8d;
+        --success-green: #2ecc71;
+        --shadow-light: 0 5px 20px rgba(0, 0, 0, 0.08);
+        --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.12);
+        --border-radius: 20px;
+        --animation-speed: 0.3s;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 50px;
+        background-color: var(--card-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 20px 0;
+        padding: 10px 15px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        border-radius: 50px;
+        transition: all var(--animation-speed) ease;
+    }
+
+    .back-link:hover {
+        color: var(--primary-blue);
+        transform: translateX(-5px);
+    }
+
+    .profile-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: var(--card-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .profile-photo-wrapper {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid var(--primary-blue);
+        box-shadow: 0 0 0 8px rgba(0, 119, 201, 0.1);
+        transition: transform var(--animation-speed) ease;
+    }
+
+    .profile-photo-wrapper:hover {
+        transform: scale(1.05);
+    }
+
+    .profile-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .placeholder-photo {
+        background-color: #d1e0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #8fa7c2;
+    }
+
+    .placeholder-photo .fas {
+        font-size: 6rem;
+    }
+
+    .profile-info {
+        text-align: center;
+    }
+
+    .profile-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0 0 5px;
+    }
+
+    .specialty-title {
+        font-size: 1.2rem;
+        color: var(--primary-blue);
+        margin: 0;
+        font-weight: 600;
+    }
+    .specialty-title .fas {
+        color: var(--accent-teal);
+    }
+
+    .profile-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .info-card {
+        background: linear-gradient(145deg, #f8fbff, #eef5f9);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        transition: all var(--animation-speed) ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-card h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-blue-dark);
+        margin-top: 0;
+        border-bottom: 2px solid var(--accent-teal);
+        padding-bottom: 8px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .info-card h2 .fas {
+        color: var(--accent-teal);
+    }
+
+    .bio-card p {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+    }
+
+    .details-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .details-list li {
+        font-size: 1rem;
+        margin-bottom: 15px;
+        line-height: 1.5;
+        font-weight: 500;
+    }
+
+    .details-list li .fas {
+        color: var(--primary-blue);
+        margin-right: 12px;
+        font-size: 1.1rem;
+        width: 25px;
+        text-align: center;
+    }
+
+    .booking-card {
+        background: linear-gradient(145deg, #f8fbff, #eef5f9);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+    }
+
+    .booking-card h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-blue-dark);
+        margin-top: 0;
+        border-bottom: 2px solid var(--accent-teal);
+        padding-bottom: 8px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .booking-card h2 .fas {
+        color: var(--accent-teal);
+    }
+
+    .booking-note {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-bottom: 25px;
+    }
+
+    .appointment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    label {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    input[type="text"], input[type="date"] {
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #d1d9e6;
+        background-color: #fcfdfe;
+        font-size: 1rem;
+        color: var(--text-dark);
+        transition: border-color var(--animation-speed) ease;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(0, 119, 201, 0.1);
+    }
+
+    .book-btn {
+        background: linear-gradient(90deg, var(--primary-blue), var(--accent-teal));
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--animation-speed) ease;
+        box-shadow: 0 8px 20px rgba(0, 119, 201, 0.2);
+        margin-top: 15px;
+    }
+
+    .book-btn:hover {
+        transform: translateY(-5px);
+        background: linear-gradient(90deg, var(--primary-blue-dark), var(--accent-teal));
+        box-shadow: 0 12px 30px rgba(0, 119, 201, 0.3);
+    }
+
+    .success-message {
+        text-align: center;
+        color: var(--success-green);
+        background-color: rgba(46, 204, 113, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 25px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+{% endblock %}

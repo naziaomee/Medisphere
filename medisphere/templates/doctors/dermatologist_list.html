@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="title">👩‍⚕️ Dermatologists</h1>
+    <p class="subtitle">Find the best dermatologists for your skin health.</p>
+
+    <div class="card-grid">
+      {% for doctor in dermatologists %}
+        <a href="{% url 'dermatologist_profile' doctor.id %}" class="card">
+          {% if doctor.image %}
+            <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}">
+          {% else %}
+            <div class="no-image">No Image</div>
+          {% endif %}
+          <div class="card-content">
+            <h3>{{ doctor.name }}</h3>
+            <p><i class="fas fa-stethoscope"></i> {{ doctor.specialty }}</p>
+            <span class="view-profile">View Profile →</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <style>
+    /* Add your custom styles for the dermatologist list page */
+    .container {
+      padding: 60px 20px;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      color: #27ae60;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+      margin-bottom: 40px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      padding: 0 10px;
+    }
+
+    .card {
+      background: #ffffff;
+      color: #2c3e50;
+      text-decoration: none;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .no-image {
+      height: 220px;
+      background: #bdc3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .card-content {
+      padding: 20px;
+      text-align: left;
+    }
+
+    .card-content h3 {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+
+    .card-content p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #7f8c8d;
+    }
+
+    .view-profile {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #27ae60;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .card:hover .view-profile {
+      color: #1abc9c;
+    }
+  </style>
+{% endblock %}

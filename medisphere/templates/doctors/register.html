@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | MediSphere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --primary-blue: #0d3b66;
+            --secondary-blue: #3a86ff;
+            --accent-green: #1abc9c;
+            --doctor-orange: #f57c00;
+            --doctor-orange-hover: #ef6c00;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+            --error-red: #ef4444;
+            --shadow-light: 0 5px 20px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --border-radius-main: 25px;
+            --border-radius-card: 20px;
+            --animation-speed: 0.4s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .register-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            max-width: 1000px;
+            width: 90%;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @media (max-width: 992px) {
+            .register-container {
+                grid-template-columns: 1fr;
+            }
+            .graphic-panel {
+                display: none;
+            }
+        }
+
+        /* Graphic Panel */
+        .graphic-panel {
+            position: relative;
+            background: linear-gradient(135deg, rgba(13, 59, 102, 0.9), rgba(58, 134, 255, 0.9)), url('https://source.unsplash.com/800x1200/?medical-team,doctor-consultation') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .graphic-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .graphic-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .graphic-content p {
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        /* Register Form Panel */
+        .form-panel {
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-panel h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .form-panel p.subheading {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Consistent spacing between form groups */
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Consistent spacing between label and input container */
+            width: 100%;
+        }
+
+        .form-group label {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-container .fas {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e4e8;
+            border-radius: var(--border-radius-card);
+            background-color: #f8fbfd;
+            font-size: 1rem;
+            color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all var(--animation-speed) ease;
+            box-sizing: border-box;
+        }
+        
+        .input-container input:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.2);
+            outline: none;
+            background-color: var(--card-bg);
+        }
+
+        .errorlist {
+            font-size: 0.85rem;
+            color: var(--error-red);
+            margin-top: 5px;
+            text-align: left;
+            list-style: none;
+            padding: 0 5px;
+        }
+
+        button, .doctor-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0; /* Changed to 0 as spacing is now handled by form gap */
+            transition: all var(--animation-speed) ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--accent-green));
+            box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3);
+            margin-top: 15px; /* Added margin back for the button */
+        }
+        button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(58, 134, 255, 0.4);
+        }
+
+        .doctor-btn {
+            background: linear-gradient(135deg, var(--doctor-orange), #ff9800);
+            box-shadow: 0 8px 20px rgba(245, 124, 0, 0.3);
+        }
+        .doctor-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, var(--doctor-orange-hover), #fb8c00);
+            box-shadow: 0 12px 30px rgba(245, 124, 0, 0.4);
+        }
+
+        .bottom-text {
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+        .bottom-text a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .bottom-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="graphic-panel">
+            <div class="graphic-content">
+                <h1>Join Our Community</h1>
+                <p>"Dedicated to fostering a healthier world, one connection at a time."</p>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <h2 class="text-blue">MediSphere</h2>
+            <p class="tagline">We Take Care of Your Health.</p>
+            <p class="subheading">Create your MediSphere account</p>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <div class="input-container">
+                        <i class="fas fa-user"></i>
+                        {{ form.username }}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="errorlist">
+                            {% for error in form.username.errors %}{{ error }}<br>{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password1">Password</label>
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i>
+                        {{ form.password1 }}
+                    </div>
+                    {% if form.password1.errors %}
+                        <div class="errorlist">{% for error in form.password1.errors %}{{ error }}<br>{% endfor %}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password2">Confirm Password</label>
+                    <div class="input-container">
+                        <i class="fas fa-lock-open"></i>
+                        {{ form.password2 }}
+                    </div>
+                    {% if form.password2.errors %}
+                        <div class="errorlist">{% for error in form.password2.errors %}{{ error }}<br>{% endfor %}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit">Register</button>
+
+                <a href="{% url 'register_doctor' %}" class="doctor-btn">
+                    <i class="fas fa-user-md"></i> Register as Doctor
+                </a>
+            </form>
+
+            <div class="bottom-text">
+                Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

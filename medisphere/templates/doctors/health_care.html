@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Care Blogs</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for "Inter" -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styling for Django form fields to apply Tailwind style */
+        .form-container input[type="text"], 
+        .form-container textarea {
+            /* Focus ring and border color set to deep Indigo */
+            @apply w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-400 focus:border-indigo-400 transition duration-150;
+        }
+        /* Hide default list styles, as we will use flex/grid */
+        .blog-posts {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen antialiased">
+
+    <!-- Professional Navigation Bar (Deep Indigo) -->
+    <nav class="bg-indigo-700 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Text color is white for contrast against Navy -->
+                    <span class="text-2xl font-extrabold text-white">Health Blog Dashboard</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <!-- Navigation Links with Amber accent on hover -->
+                    <a href="#" class="text-white font-semibold border-b-2 border-amber-400 pb-1 transition-colors duration-200">All Posts</a>
+                    <a href="#" class="text-indigo-200 hover:text-amber-300 font-medium transition-colors duration-200">Create New</a>
+                    <a href="#" class="text-indigo-200 hover:text-amber-300 font-medium transition-colors duration-200">Account</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+
+        <!-- Header -->
+        <div class="mb-10 text-center md:text-left">
+            <h1 class="text-4xl font-extrabold text-indigo-800">Health Care Blogs</h1>
+            <p class="text-lg text-gray-600 mt-2">Manage, view, and create new articles for your patient community.</p>
+        </div>
+
+        <!-- Blog Posts Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-indigo-700 mb-4 border-b-2 border-amber-400 inline-block pb-1">Published Articles</h2>
+            
+            {% if posts %}
+                <!-- Responsive Grid Layout for Blog Posts -->
+                <ul class="blog-posts grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                    {% for post in posts %}
+                        <li class="blog-post bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-300 p-6 border-t-4 border-indigo-500 transform hover:-translate-y-1">
+                            <!-- Card Content -->
+                            <div class="space-y-4">
+                                <!-- Show uploaded featured image if present, otherwise a mock placeholder -->
+                                {% if post.featured_image %}
+                                <div class="w-full h-32 mb-3 rounded-lg overflow-hidden border border-indigo-200">
+                                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-32 object-cover" />
+                                </div>
+                                {% else %}
+                                <div class="w-full h-32 bg-indigo-50 flex items-center justify-center rounded-lg mb-3 border border-indigo-200">
+                                    <span class="text-indigo-600 text-sm font-medium">Featured Image Mock</span>
+                                </div>
+                                {% endif %}
+
+                                <h3 class="text-xl font-bold text-gray-900 line-clamp-2">{{ post.title }}</h3>
+                                
+                                <!-- Post Snippet -->
+                                <p class="text-gray-700 text-sm line-clamp-3">{{ post.content|slice:":200" }}...</p>
+                                
+                                <!-- Actions -->
+                                <div class="post-actions pt-4 flex space-x-4 border-t border-gray-100 mt-4">
+                                    <a href="{% url 'update_blog' post.id %}" class="action-link text-sm font-semibold text-indigo-600 hover:text-amber-500 transition duration-150 flex items-center">
+                                        <!-- Icon: Edit -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                        Edit
+                                    </a>
+                                    <span class="text-gray-300">|</span>
+                                    <a href="{% url 'delete_blog' post.id %}" class="action-link text-sm font-semibold text-red-600 hover:text-red-800 transition duration-150 flex items-center">
+                                        <!-- Icon: Trash -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="bg-white p-8 rounded-xl shadow-md text-center border border-indigo-200">
+                    <p class="text-gray-500 font-medium">No posts available. Be the first to publish a new health article!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Add New Post Form Section -->
+        <div class="max-w-4xl mx-auto mt-16 bg-white rounded-xl shadow-2xl p-6 md:p-10 border border-indigo-200">
+            <h2 class="text-2xl font-extrabold text-indigo-800 mb-6 flex items-center">
+                <!-- Icon: Plus Circle - Updated color to deep Indigo -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                Add a New Blog Post
+            </h2>
+            
+            <form method="POST" enctype="multipart/form-data" class="form-container space-y-6">
+                {% csrf_token %}
+                {{ form.as_p }}
+                
+                <div class="pt-4">
+                    <!-- Create Post Button - Maintained strong green, which contrasts well with Navy -->
+                    <button type="submit" class="w-full specialist-btn blue px-8 py-3 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all transform hover:scale-105">
+                        Create Post
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+</html>

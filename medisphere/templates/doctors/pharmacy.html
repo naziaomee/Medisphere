@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MediSphere</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            /* Changed to a more dynamic, colorful gradient */
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f3ff 100%);
+            color: #1a202c; /* Darker text for better contrast */
+        }
+        .cart-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            width: 300px;
+            z-index: 1000;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .cart-icon:hover .cart-dropdown {
+            display: block;
+        }
+        .product-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e2e8f0; /* Subtle border for definition */
+        }
+        .product-card:hover {
+            transform: translateY(-8px); /* More pronounced lift effect */
+            box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+        }
+        .icon-box {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            /* Changed to a more vibrant radial gradient */
+            background: radial-gradient(circle, #a855f7 0%, #6d28d9 100%);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
+        }
+        .icon-box i {
+            font-size: 2.5rem;
+            color: white; /* Icons are now white for contrast */
+        }
+        .arrow-icon {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #6d28d9; /* Matches the new color scheme */
+            transition: transform 0.3s ease-in-out;
+        }
+        .product-card:hover .arrow-icon {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="font-sans">
+
+    <nav class="sticky top-0 z-50 flex items-center justify-between p-4 bg-white shadow-lg">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl text-purple-700">
+                <i class="fas fa-prescription-bottle-alt"></i>
+            </span>
+            <h1 class="text-2xl font-bold text-gray-800">MediSphere</h1>
+        </div>
+        <div class="flex items-center gap-8">
+            <a href="#" class="text-gray-600 hover:text-purple-700 font-medium transition-colors">Home</a>
+            <a href="#" class="text-gray-600 hover:text-purple-700 font-medium transition-colors">Products</a>
+            <a href="#" class="text-gray-600 hover:text-purple-700 font-medium transition-colors">About Us</a>
+            <a href="#" class="text-gray-600 hover:text-purple-700 font-medium transition-colors">Contact</a>
+        </div>
+        <form action="{% url 'product_list' %}" method="get" class="flex items-center gap-3">
+            <div class="relative">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search products..."
+                    class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all duration-200 w-64"
+                />
+                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <button type="submit" class="bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+        <div class="flex items-center gap-6">
+            <div class="relative cart-icon cursor-pointer">
+                <span class="text-2xl text-gray-600 hover:text-purple-700 transition-colors">
+                    <i class="fas fa-shopping-cart"></i>
+                </span>
+                <span id="cart-item-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+                <div class="cart-dropdown bg-white p-4 mt-2 border border-gray-200">
+                    <h4 class="text-lg font-semibold mb-3 border-b pb-2 text-gray-700">Your Cart</h4>
+                    <div id="cart-items" class="space-y-3">
+                        <p class="text-gray-500 text-sm">Your cart is empty.</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t flex justify-between items-center">
+                        <span class="font-bold text-gray-700">Total:</span>
+                        <span id="cart-total" class="font-bold text-gray-800">$0.00</span>
+                    </div>
+                    <a href="#" class="mt-4 block w-full text-center bg-purple-600 text-white rounded-full py-2 hover:bg-purple-700 transition-colors font-medium">Checkout</a>
+                </div>
+            </div>
+            <a href="#" class="text-lg flex items-center gap-2 text-gray-600 hover:text-purple-700 transition-colors">
+                <span class="text-2xl">
+                    <i class="fas fa-user-circle"></i>
+                </span>
+                <span class="hidden md:inline font-medium">Account</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="p-8 container mx-auto max-w-7xl">
+        <h2 class="text-4xl font-extrabold mb-10 text-center text-gray-800 tracking-tight">Explore Our Product Categories</h2>
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+            <a href="{% url 'surgical_list' %}" class="product-card block bg-white rounded-xl shadow-md p-6 text-center">
+                <div class="icon-box">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Surgical Products</h3>
+                <span class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+            <a href="{% url 'product_list' %}" class="product-card block bg-white rounded-xl shadow-md p-6 text-center">
+                <div class="icon-box">
+                    <i class="fas fa-baby"></i>
+                </div>
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Baby Care</h3>
+                <span class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+            <a href="#" class="product-card block bg-white rounded-xl shadow-md p-6 text-center opacity-70 cursor-not-allowed">
+                <div class="icon-box">
+                    <i class="fas fa-venus"></i>
+                </div>
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Women Care</h3>
+                <span class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+            <a href="{% url 'vitamins' %}" class="product-card block bg-white rounded-xl shadow-md p-6 text-center">
+                <div class="icon-box">
+                    <i class="fas fa-capsules"></i>
+                </div>
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Vitamins / Supplements</h3>
+                <span class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+            <a href="{% url 'medicine_list' %}" class="product-card block bg-white rounded-xl shadow-md p-6 text-center">
+                <div class="icon-box">
+                    <i class="fas fa-tablets"></i>
+                </div>
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Medicine</h3>
+                <span class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+            <a href="{% url 'dental_products' %}" class="product-card block bg-white rounded-xl shadow-md p-6 text-center">
+                <div class="icon-box">
+                    <i class="fas fa-tooth"></i>
+                </div>
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Dental Care</h3>
+                <span class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartItemCountSpan = document.getElementById('cart-item-count');
+            const cartTotalSpan = document.getElementById('cart-total');
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            function updateCartDisplay() {
+                cartItemsContainer.innerHTML = '';
+                let total = 0;
+                let itemCount = 0;
+                
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<p class="text-gray-500 text-sm">Your cart is empty.</p>';
+                } else {
+                    cart.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'flex justify-between items-center';
+                        itemElement.innerHTML = `
+                            <div class="flex-1">
+                                <span class="text-sm font-medium">${item.name}</span>
+                                <span class="text-xs text-gray-500 block">Qty: ${item.quantity}</span>
+                            </div>
+                            <span class="text-sm font-semibold">$${(item.price * item.quantity).toFixed(2)}</span>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                        total += item.price * item.quantity;
+                        itemCount += item.quantity;
+                    });
+                }
+                cartItemCountSpan.textContent = itemCount;
+                cartTotalSpan.textContent = `$${total.toFixed(2)}`;
+            }
+            updateCartDisplay();
+        });
+    </script>
+</body>
+</html>

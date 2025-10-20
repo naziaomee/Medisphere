@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicines | MediSphere</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        /* Richer shadow for depth */
+        .pro-shadow {
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.08), 0 5px 15px -5px rgba(0, 0, 0, 0.05);
+        }
+        .search-input:focus {
+            border-color: #8B5CF6; /* violet-500 */
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+            outline: none;
+        }
+        .card:hover {
+            border-color: #8B5CF6;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Professional Navigation Bar (Indigo Theme) -->
+    <nav class="sticky top-0 z-50 flex items-center justify-between p-4 bg-white pro-shadow border-b border-indigo-100">
+        <!-- Logo and Title -->
+        <h1 class="text-2xl font-extrabold text-indigo-800 tracking-wider flex items-center gap-2">
+            <span class="text-violet-600 text-3xl"><i class="fas fa-prescription-bottle-alt"></i></span> MediSphere
+        </h1>
+        
+        <!-- Search Bar (Functional) -->
+        <div class="relative w-full max-w-md mx-4 md:mx-0">
+            <input 
+                type="text" 
+                id="search-input"
+                placeholder="Search for medicines by name..." 
+                class="search-input w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-xl transition duration-200" 
+            />
+            <i class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 fas fa-search"></i>
+        </div>
+
+        <!-- Cart and User -->
+        <div class="flex items-center gap-6 text-indigo-600">
+            <!-- Cart Icon and Count -->
+            <a href="#" id="cart-button" class="text-2xl hover:text-violet-600 transition relative">
+                <i class="fas fa-shopping-cart"></i>
+                <!-- Cart Count Badge -->
+                <span id="cart-count" class="absolute top-[-5px] right-[-5px] bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center opacity-0 transition-opacity duration-300">0</span>
+            </a>
+            <!-- User Profile -->
+            <a href="#" class="text-lg flex items-center gap-2 font-medium hover:text-violet-600 transition">
+                <i class="fas fa-user-circle text-2xl"></i> 
+                <span class="hidden md:inline">User Account</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="p-6 max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <h2 class="text-3xl font-extrabold mb-8 text-indigo-800 border-b-2 border-indigo-200 pb-3">
+            Available Medicines
+        </h2>
+        
+        <!-- Product Grid -->
+        <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" id="product-grid">
+            {% for medicine in medicines %}
+                <!-- Product Card: Added data attributes for JS to read product details -->
+                <div class="card bg-white rounded-2xl pro-shadow text-left overflow-hidden transition duration-300 hover:shadow-2xl hover:translate-y-[-6px] border border-transparent hover:border-violet-300"
+                   data-product-id="{{ medicine.id }}"
+                   data-product-name="{{ medicine.name }}"
+                   data-product-price="{{ medicine.price }}"> 
+
+                    <!-- Product Image and Detail Link -->
+                    <a href="{% url 'medicine_detail' medicine.id %}" class="block">
+                        <!-- Image/Graphic Area (Indigo Background) -->
+                        <div class="w-full h-48 bg-indigo-50 rounded-t-2xl flex items-center justify-center p-4">
+                            {% if medicine.image %}
+                                <img src="{{ medicine.image.url }}" alt="{{ medicine.name }}" class="h-full w-full object-contain rounded-lg">
+                            {% else %}
+                                <!-- Professional Emoji/Graphic Placeholder (Violet) -->
+                                <span class="text-7xl opacity-80" role="img" aria-label="Medicine">🩹</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                    
+                    <!-- Details and Cart Button -->
+                    <div class="p-4">
+                        <h3 class="font-bold text-xl text-gray-800 mb-1 line-clamp-1">
+                            {{ medicine.name }}
+                        </h3>
+                        <p class="text-sm text-gray-500 line-clamp-2 mt-2 h-10">{{ medicine.description }}</p>
+
+                        <!-- Price and Add to Cart Button -->
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
+                            <span class="text-2xl font-extrabold text-violet-600">৳{{ medicine.price }}</span>
+                            <!-- Add to Cart Button -->
+                            <button onclick="addToCart(event)" 
+                                class="px-3 py-1 bg-violet-500 text-white rounded-lg text-sm font-semibold hover:bg-violet-600 transition transform hover:scale-105">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Hidden Cart Modal Structure -->
+    <div id="cart-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-6 pro-shadow transform transition-all duration-300">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-2xl font-bold text-indigo-800"><i class="fas fa-shopping-cart mr-2"></i> Your Cart</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="cart-items-container" class="max-h-80 overflow-y-auto space-y-3">
+                <p id="empty-cart-message" class="text-gray-500 text-center py-4">Your cart is empty.</p>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-dashed">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold text-gray-700">Total:</span>
+                    <span id="cart-total" class="text-2xl font-extrabold text-violet-600">$0.00</span>
+                </div>
+                <!-- IMPORTANT: Using console.log instead of alert() for checkout -->
+                <button onclick="console.log('Proceeding to Checkout! (Functionality not yet implemented)'); closeModal();" 
+                    class="w-full px-4 py-3 bg-violet-600 text-white font-bold rounded-xl hover:bg-violet-700 transition">
+                    Checkout Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Shopping Cart Logic ---
+        const CART_STORAGE_KEY = 'medisphere_cart_items';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialization for cart and search
+            initCart();
+            initSearch();
+
+            // Cart Button Modal Event
+            document.getElementById('cart-button').addEventListener('click', (e) => {
+                e.preventDefault();
+                showCartModal();
+            });
+        });
+
+        /**
+         * Loads cart items from localStorage and updates the UI count.
+         */
+        function initCart() {
+            const cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+            // Update the cart count based on the total quantity of items
+            updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
+        }
+
+        /**
+         * Updates the cart count badge in the navigation bar.
+         * @param {number} count - The total quantity of items in the cart.
+         */
+        function updateCartCount(count) {
+            const countElement = document.getElementById('cart-count');
+            countElement.textContent = count;
+            // Show badge if count > 0, hide otherwise
+            countElement.classList.toggle('opacity-0', count === 0);
+        }
+
+        /**
+         * Handles the click event for the "Add to Cart" button.
+         * @param {Event} event - The click event object.
+         */
+        function addToCart(event) {
+            // Stop the click from triggering the parent card's detail link
+            event.stopPropagation();
+            event.preventDefault(); 
+            
+            // Find the closest product card (the <div> tag with class 'card')
+            const card = event.target.closest('.card');
+            if (!card) return;
+
+            // Extract product data from the card's data attributes
+            const id = card.getAttribute('data-product-id');
+            const name = card.getAttribute('data-product-name');
+            // The price value might contain currency symbols (৳) or be a string from the template, so we clean it.
+            const rawPrice = card.getAttribute('data-product-price');
+            const price = parseFloat(rawPrice.replace(/[^\d.]/g, '')); 
+
+            if (!id || !name || isNaN(price)) {
+                console.error('Missing product data for add to cart:', { id, name, rawPrice });
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+            
+            // Find if item already exists
+            const existingItem = cart.find(item => item.id === id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, name, price, quantity: 1 });
+            }
+
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+            // Update cart count with total quantity
+            updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
+            
+            // Simple visual feedback
+            event.target.textContent = 'Added! 🎉';
+            event.target.classList.add('bg-green-500', 'hover:bg-green-600');
+            event.target.classList.remove('bg-violet-500', 'hover:bg-violet-600');
+            
+            setTimeout(() => {
+                event.target.textContent = 'Add to Cart';
+                event.target.classList.remove('bg-green-500', 'hover:bg-green-600');
+                event.target.classList.add('bg-violet-500', 'hover:bg-violet-600');
+            }, 1000);
+        }
+
+        /**
+         * Displays the custom cart modal with current contents.
+         */
+        function showCartModal() {
+            const modal = document.getElementById('cart-modal');
+            const container = document.getElementById('cart-items-container');
+            const totalElement = document.getElementById('cart-total');
+            const emptyMessage = document.getElementById('empty-cart-message');
+
+            let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+            let total = 0;
+
+            container.innerHTML = ''; // Clear previous contents
+
+            if (cart.length === 0) {
+                // Re-add empty message if it was removed
+                if (!document.getElementById('empty-cart-message')) {
+                    container.innerHTML = '<p id="empty-cart-message" class="text-gray-500 text-center py-4">Your cart is empty.</p>';
+                }
+            } else {
+                // Remove empty message if it exists
+                const existingEmptyMessage = document.getElementById('empty-cart-message');
+                if (existingEmptyMessage && existingEmptyMessage.parentNode) {
+                    existingEmptyMessage.remove();
+                }
+                
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    const itemHtml = `
+                        <div class="flex justify-between items-center border-b border-gray-100 py-2">
+                            <div class="flex flex-col">
+                                <span class="font-medium text-gray-800">${item.name}</span>
+                                <span class="text-sm text-gray-500">${item.quantity} x ৳${item.price.toFixed(2)}</span>
+                            </div>
+                            <span class="font-semibold text-violet-500">৳${itemTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                    container.innerHTML += itemHtml;
+                });
+            }
+
+            // Note: Currency symbol is hardcoded to ৳ for display in the modal
+            totalElement.textContent = `৳${total.toFixed(2)}`;
+            modal.classList.remove('hidden');
+        }
+
+        /**
+         * Closes the custom cart modal.
+         */
+        function closeModal() {
+            document.getElementById('cart-modal').classList.add('hidden');
+        }
+
+        // --- Search Filtering Logic ---
+
+        function initSearch() {
+            const searchInput = document.getElementById('search-input');
+            const productCards = document.querySelectorAll('.card');
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+
+                productCards.forEach(card => {
+                    // Get product name from the data attribute (safer than scraping HTML)
+                    const productName = card.getAttribute('data-product-name').toLowerCase();
+
+                    // Determine if the product name includes the search term
+                    const isMatch = productName.includes(searchTerm);
+
+                    // Show the card if it matches, otherwise hide it
+                    card.classList.toggle('hidden', !isMatch);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

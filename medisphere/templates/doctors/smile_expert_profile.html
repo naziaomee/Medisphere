@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-container">
+    <a href="/doctors/smile-experts/" class="back-link">← Back to Smile Experts</a>
+
+    <div class="profile-card">
+        {% if doctor.image %}
+            <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}" class="doctor-image">
+        {% else %}
+            <div class="no-image">No Image Available</div>
+        {% endif %}
+
+        <div class="doctor-details">
+            <h1>{{ doctor.name }}</h1>
+            <p class="specialty"><strong>Specialty:</strong> {{ doctor.specialty }}</p>
+            <p><strong>Bio:</strong> {{ doctor.bio }}</p>
+            <p><strong>Medical College:</strong> {{ doctor.medical_college }}</p>
+            <p><strong>Appointment Time:</strong> {{ doctor.appointment_time }}</p>
+            <p><strong>Payment Method:</strong> {{ doctor.payment_method }}</p>
+            <p><strong>Visit Fee:</strong> <span class="fee">{{ doctor.visit_fee }} TK</span></p>
+        </div>
+    </div>
+
+    <!-- Appointment Booking Form -->
+    <form method="post" class="appointment-form">
+        {% csrf_token %}
+        <h2>📅 Book an Appointment</h2>
+        <label for="patient_name">Your Name:</label>
+        <input type="text" id="patient_name" name="patient_name" required>
+
+        <label for="appointment_date">Preferred Appointment Date:</label>
+        <input type="date" id="appointment_date" name="appointment_date" required>
+
+        <button type="submit">Book Appointment</button>
+    </form>
+
+    <!-- Success Message -->
+    {% if appointment_success %}
+        <p class="success-message">✅ Appointment Booked Successfully!</p>
+    {% endif %}
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9f9f9;
+}
+
+.profile-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #27ae60;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: #1abc9c;
+}
+
+.profile-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.doctor-image {
+    width: 250px;
+    height: 250px;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.no-image {
+    width: 250px;
+    height: 250px;
+    background: #bdc3c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+    border-radius: 16px;
+}
+
+.doctor-details {
+    flex: 1;
+    text-align: left;
+}
+
+.doctor-details h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.specialty {
+    color: #16a085;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.doctor-details p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #34495e;
+}
+
+.fee {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.appointment-form {
+    margin-top: 40px;
+    padding: 20px;
+    border-top: 2px solid #ecf0f1;
+}
+
+.appointment-form h2 {
+    color: #2980b9;
+    margin-bottom: 20px;
+}
+
+.appointment-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.appointment-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.appointment-form button {
+    background: #27ae60;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.appointment-form button:hover {
+    background: #1abc9c;
+}
+
+.success-message {
+    color: green;
+    font-weight: bold;
+    margin-top: 20px;
+}
+</style>
+{% endblock %}

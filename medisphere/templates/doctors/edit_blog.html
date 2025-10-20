@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog Post</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Basic input styling for Django forms */
+        .form-container input, 
+        .form-container textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .form-container input:focus,
+        .form-container textarea:focus {
+            outline: none;
+            border-color: #38BDF8;
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-sky-600">Content Studio</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-sky-500 font-medium">Drafts</a>
+                    <a href="#" class="text-sky-600 font-semibold border-b-2 border-sky-600 pb-1">Editor</a>
+                    <a href="#" class="text-gray-600 hover:text-sky-500 font-medium">Analytics</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-6 md:p-10 border border-gray-200">
+
+            <!-- Header -->
+            <div class="mb-8">
+                <p class="text-sm text-gray-500 mb-2">
+                    <a href="#" class="hover:text-sky-500">Home</a> / 
+                    <a href="#" class="hover:text-sky-500">All Posts</a> / 
+                    <span class="font-semibold text-gray-700">Edit Post</span>
+                </p>
+                <h1 class="text-4xl font-extrabold text-gray-900">Edit Blog Post</h1>
+                <p class="text-lg text-gray-500 mt-1">Refine and update your article content and featured image.</p>
+            </div>
+
+            <!-- Form -->
+            <form method="POST" enctype="multipart/form-data" class="form-container space-y-6">
+                {% csrf_token %}
+
+                <!-- Image Section -->
+                <div class="p-6 bg-sky-50 border border-sky-200 rounded-xl">
+                    <label class="block text-lg font-semibold text-gray-700 mb-3 flex items-center">
+                        Featured Image
+                    </label>
+
+                    {% if form.instance.image %}
+                        <img src="{{ form.instance.image.url }}" class="w-full h-40 object-cover rounded-lg mb-4" alt="Current Image">
+                    {% else %}
+                        <div class="w-full h-40 bg-gray-200 flex items-center justify-center rounded-lg mb-4 border-2 border-dashed border-gray-400">
+                            <span class="text-gray-500">No image uploaded yet</span>
+                        </div>
+                    {% endif %}
+
+                    {{ form.image }}
+                </div>
+
+                <!-- Title -->
+                <div>
+                    <label class="block text-lg font-semibold text-gray-700 mb-1" for="id_title">Post Title:</label>
+                    {{ form.title }}
+                </div>
+
+                <!-- Content -->
+                <div>
+                    <label class="block text-lg font-semibold text-gray-700 mb-1" for="id_content">Article Content:</label>
+                    {{ form.content }}
+                </div>
+
+                <!-- Author & Tags -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-700 mb-1">Author:</label>
+                        <input type="text" value="Dr. Jane Doe" readonly class="bg-gray-50 cursor-not-allowed w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-700 mb-1">Tags:</label>
+                        <input type="text" placeholder="e.g., health, nutrition, surgery" class="w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="pt-4 flex justify-between items-center">
+                    <a href="{% url 'delete_blog' form.instance.pk %}" class="px-6 py-3 text-red-600 bg-transparent border border-red-200 rounded-lg hover:bg-red-50 transition-colors font-semibold">
+                        Delete Draft
+                    </a>
+
+                    <button type="submit" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all transform hover:scale-105 flex items-center">
+                        Update Post
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

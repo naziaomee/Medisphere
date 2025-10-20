@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Prescription | MediSphere</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for "Inter" -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom styling for Django form elements to match Tailwind inputs */
+        form p {
+            margin-bottom: 1.5rem;
+        }
+        form p label {
+            display: block;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        form p input, form p textarea, form p select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            color: #374151;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        form p textarea {
+            min-height: 120px;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #1a56db;
+            box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.3);
+            outline: none;
+        }
+        .pro-shadow {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Professional Navigation Bar -->
+    <nav class="bg-white pro-shadow py-4 px-6 md:px-12 flex justify-between items-center rounded-b-3xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <i class="fas fa-prescription-bottle-alt"></i>
+            </div>
+            <span class="text-3xl font-bold text-gray-800 tracking-tight">MediSphere</span>
+        </div>
+        <div class="space-x-6 text-base font-medium hidden md:flex">
+            <a href="#" class="text-gray-600 hover:text-blue-500 transition-colors">Dashboard</a>
+            <a href="#" class="text-gray-600 hover:text-blue-500 transition-colors">Patients</a>
+            <a href="#" class="text-blue-600 font-semibold transition-colors">Prescriptions</a>
+            <a href="#" class="text-gray-600 hover:text-blue-500 transition-colors">Settings</a>
+            <a href="#" class="text-gray-600 hover:text-red-500 transition-colors">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="max-w-3xl mx-auto bg-white rounded-3xl pro-shadow p-8 md:p-12 border border-slate-200">
+
+            <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+                <div class="text-center md:text-left mb-4 md:mb-0">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">Create New Prescription</h1>
+                    <p class="text-gray-500 text-lg">Generate a new prescription for your patient with ease.</p>
+                </div>
+                <div class="flex-shrink-0">
+                    <img src="https://placehold.co/150x150/e0f2fe/1e40af?text=Professional+Icon" alt="Professional Prescription Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg">
+                </div>
+            </div>
+            
+            <!-- Replaced doctor and patient image with a more professional graphic -->
+            <div class="flex justify-center mb-6">
+                <img src="https://placehold.co/600x200/e2e8f0/1e40af?text=MediSphere+Professional+Services" alt="Professional graphic banner" class="rounded-lg shadow-md w-full max-w-lg">
+            </div>
+
+            <!-- The Prescription Form -->
+            <form method="post" class="space-y-8">
+                <!-- Django CSRF token -->
+                {% csrf_token %}
+
+                <!-- This is where your Django form fields will be rendered -->
+                <div class="space-y-6">
+                    {{ form.as_p }}
+                </div>
+
+                <!-- The submit button -->
+                <div class="flex justify-end pt-4">
+                    <button type="submit" 
+                        class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform hover:scale-105">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Prescription
+                    </button>
+                </div>
+            </form>
+
+            <!-- Back Link -->
+            <div class="mt-8 text-center">
+                <a href="{% url 'doctor_dashboard' %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

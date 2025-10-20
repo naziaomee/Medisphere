@@ -1,41 +1,320 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor List</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Specialist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --bg-color: #eef5f9;
+      --card-color: #ffffff;
+      --primary-color: #0077c9;
+      --primary-hover: #005f9c;
+      --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.07);
+      --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.12);
+      --border-radius: 20px;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+      --navbar-height: 70px;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--primary-color);
+    }
+
+    /* Navigation Bar */
+    nav {
+      background: linear-gradient(90deg, #005a9c, #0093d9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      height: var(--navbar-height);
+      box-shadow: var(--shadow-light);
+    }
+
+    nav .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -1px;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px;
+    }
+
+    nav ul li a {
+      color: white;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav ul li a:hover {
+      color: #b3e0ff;
+    }
+
+    /* Back Button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 30px 40px;
+      padding: 12px 25px;
+      background-color: var(--card-color);
+      color: var(--text-dark);
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-light);
+    }
+
+    .back-btn:hover {
+      transform: translateX(-8px) scale(1.02);
+      background-color: #eef1f3;
+    }
+
+    /* Background shapes */
+    .background-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .background-shapes .shape {
+      position: absolute;
+      background-color: rgba(0, 119, 201, 0.05);
+      border-radius: 50%;
+      filter: blur(50px);
+      animation: float 20s infinite ease-in-out alternate;
+    }
+
+    .background-shapes .shape:nth-child(1) {
+      width: 250px;
+      height: 250px;
+      top: 5%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .background-shapes .shape:nth-child(2) {
+      width: 300px;
+      height: 300px;
+      bottom: 10%;
+      right: 5%;
+      animation-delay: 5s;
+    }
+
+    .background-shapes .shape:nth-child(3) {
+      width: 180px;
+      height: 180px;
+      top: 40%;
+      left: 35%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(20px, -30px) rotate(20deg); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 50px 40px;
+      background-color: var(--card-color);
+      box-shadow: var(--shadow-medium);
+      border-radius: var(--border-radius);
+      position: relative;
+    }
+
+    .header-text {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .header-text h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 3.2rem;
+      margin-bottom: 10px;
+      letter-spacing: -1.5px;
+    }
+
+    .header-text p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .specialist-title {
+      text-align: center;
+      color: var(--text-dark);
+      font-size: 2rem;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 20px;
+      margin-bottom: 40px;
+    }
+
+    .specialist-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 5px;
+      background-color: var(--primary-color);
+      border-radius: 3px;
+    }
+
+    #specialist-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      padding: 20px 0;
+    }
+
+    .specialist-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      text-align: center;
+      padding: 30px;
+      font-size: 1.1rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-light);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      background: linear-gradient(145deg, #f0f6fa, #e1e7ec);
+      color: var(--text-dark);
+      height: 160px;
+      font-weight: 600;
+    }
+
+    .specialist-btn .icon {
+      font-size: 3.5rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      transition: transform 0.4s ease-in-out, color 0.4s ease-in-out;
+    }
+
+    .specialist-btn:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: var(--shadow-medium);
+      background: linear-gradient(145deg, #e1e7ec, #f0f6fa);
+    }
+
+    .specialist-btn:hover .icon {
+      transform: rotate(10deg);
+      color: var(--primary-hover);
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Meet Our Specialist Doctors</h1>
-        <p>Consult your own doctor</p>
-        <hr>
-        <h2>Choose Your Specialist</h2>
 
-        <!-- Replace list with buttons -->
-        <div id="specialist-buttons">
-            <button class="specialist-btn">General Medicine</button>
-            <button class="specialist-btn">Neurologist</button>
-            <button class="specialist-btn">Dental Surgeon</button>
-            <button class="specialist-btn">Cardiologist</button>
-            <button class="specialist-btn">Orthopedics</button>
-            <button class="specialist-btn">Physiotherapist</button>
-            <button class="specialist-btn">Mental Care</button>
-            <button class="specialist-btn">Eye Doctor</button>
-            <button class="specialist-btn">Dermatologist</button>
-        </div>
+  <nav>
+    <div class="logo">MediSphere</div>
+    <ul>
+      <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="#"><i class="fas fa-hand-holding-medical"></i> Services</a></li>
+      <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+  </nav>
 
-        <hr>
+  <a href="javascript:history.back()" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Go Back
+  </a>
 
-        <div>
-            <p>Get expert medical consultations for common illnesses, preventive care, and general health concerns.</p>
-            <p>Straighten your smile with specialized orthodontic treatments, including braces and aligners.</p>
-            <p>Maintain strong and healthy teeth with professional dental checkups, cleaning, and treatment.</p>
-            <p>Recover from injuries and improve mobility with personalized physiotherapy sessions.</p>
-        </div>
+  <div class="background-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <div class="container">
+    <div class="header-text">
+      <h1>Consult Our <span style="color: var(--primary-color);">Specialists</span></h1>
+      <p>Find the perfect healthcare professional for your needs. We've made it easy to connect with experienced doctors.</p>
     </div>
+
+    <div class="specialist-title">
+      <h2>Choose Your Specialty</h2>
+    </div>
+
+    <div id="specialist-buttons">
+      <a href="{% url 'general_medicine' %}" class="specialist-btn">
+        <i class="fas fa-notes-medical icon"></i>General Medicine
+      </a>
+      <a href="{% url 'neurologists' %}" class="specialist-btn">
+        <i class="fas fa-brain icon"></i>Neurologist
+      </a>
+      <a href="{% url 'smile_experts_list' %}" class="specialist-btn">
+        <i class="fas fa-tooth icon"></i>Dental Surgeon
+      </a>
+      <a href="cardiologist.html" class="specialist-btn">
+        <i class="fas fa-heartbeat icon"></i>Cardiologist
+      </a>
+      <a href="orthopedics.html" class="specialist-btn">
+        <i class="fas fa-bone icon"></i>Orthopedics
+      </a>
+      <a href="physiotherapist.html" class="specialist-btn">
+        <i class="fas fa-running icon"></i>Physiotherapist
+      </a>
+      <a href="mental-care.html" class="specialist-btn">
+        <i class="fas fa-brain icon"></i>Mental Care
+      </a>
+      <a href="eye-doctor.html" class="specialist-btn">
+        <i class="fas fa-eye icon"></i>Eye Doctor
+      </a>
+      <a href="dermatologist.html" class="specialist-btn">
+        <i class="fas fa-allergies icon"></i>Dermatologist
+      </a>
+      <a href="#" class="specialist-btn">
+        <i class="fas fa-child icon"></i>Pediatrician
+      </a>
+      <a href="#" class="specialist-btn">
+        <i class="fas fa-syringe icon"></i>Pathologist
+      </a>
+      <a href="#" class="specialist-btn">
+        <i class="fas fa-hospital-user icon"></i>Urologist
+      </a>
+    </div>
+  </div>
+
 </body>
 </html>

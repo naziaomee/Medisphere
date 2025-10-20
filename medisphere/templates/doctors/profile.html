@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Profile - {{ doctor.name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f4f7f9;
+            --card-color: #ffffff;
+            --primary-blue: #1e3a8a;
+            --primary-green: #10b981;
+            --accent-green-dark: #059669;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+            --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.07);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --border-radius-main: 25px;
+            --border-radius-card: 15px;
+            --animation-speed: 0.4s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-blue);
+            transition: color var(--animation-speed) ease;
+        }
+
+        /*--- Nav Bar ---*/
+        .main-nav {
+            background: linear-gradient(90deg, #1d4ed8, #2563eb);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .main-nav .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .main-nav .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px;
+        }
+        .main-nav .nav-links a {
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .main-nav .nav-links a:hover {
+            color: #d1fae5;
+        }
+
+        /*--- Main Container & Back Button ---*/
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: var(--card-color);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+        .back-link:hover {
+            color: var(--primary-blue);
+            transform: translateX(-5px);
+        }
+
+        /*--- Profile Header ---*/
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .profile-photo-wrapper {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 5px solid var(--primary-blue);
+            box-shadow: 0 0 0 10px rgba(30, 58, 138, 0.1);
+            transition: transform var(--animation-speed) ease;
+        }
+        .profile-photo-wrapper:hover {
+            transform: scale(1.05);
+        }
+        .profile-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .profile-specialty {
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            font-weight: 500;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .profile-specialty .fas {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+        }
+
+        /*--- Info Grid & Cards ---*/
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .info-card {
+            background-color: #f8fbff;
+            padding: 30px;
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-light);
+            transition: transform var(--animation-speed) ease;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        .info-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .info-card h3 .fas {
+            font-size: 1.8rem;
+            color: var(--primary-green);
+        }
+        .info-card p, .info-card ul {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-card ul li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        .info-card ul li .fas {
+            color: var(--primary-green);
+        }
+
+        /*--- Booking Section ---*/
+        .booking-section {
+            background-color: var(--card-color);
+            padding: 40px;
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            margin-top: 30px;
+        }
+        .book-btn {
+            background: linear-gradient(90deg, var(--primary-green), #14a06d);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all var(--animation-speed) ease;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .book-btn:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(90deg, var(--accent-green-dark), var(--primary-green));
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
+        }
+        .book-btn .fas {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .success {
+            margin-top: 25px;
+            background-color: #d1fae5;
+            color: var(--accent-green-dark);
+            padding: 20px;
+            border-radius: var(--border-radius-card);
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .success .fas {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="logo">MediSphere</div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-hand-holding-medical"></i> Services</a></li>
+            <li><a href="#"><i class="fas fa-user-md"></i> Doctors</a></li>
+            <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <a href="{% url 'general_medicine' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+
+        <div class="profile-header">
+            {% if doctor.image %}
+                <div class="profile-photo-wrapper">
+                    <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}" class="profile-photo">
+                </div>
+            {% endif %}
+            <h1 class="profile-name">{{ doctor.name }}</h1>
+            <p class="profile-specialty">
+                <i class="fas fa-stethoscope"></i>
+                {{ doctor.specialty }}
+            </p>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><i class="fas fa-book-open"></i> About</h3>
+                <p>{{ doctor.bio }}</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fas fa-info-circle"></i> Key Details</h3>
+                <ul>
+                    <li><i class="fas fa-university"></i> <strong>Medical College:</strong> {{ doctor.medical_college }}</li>
+                    <li><i class="fas fa-clock"></i> <strong>Appointment Time:</strong> {{ doctor.appointment_time }}</li>
+                    <li><i class="fas fa-money-bill-wave"></i> <strong>Visit Fee:</strong> {{ doctor.visit_fee }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="booking-section">
+            {% if appointment_booked %}
+                <div class="success">
+                    <i class="fas fa-check-circle"></i> Appointment Booked Successfully!
+                </div>
+            {% else %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="book-btn">
+                        <i class="fas fa-calendar-check"></i> Book Appointment
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

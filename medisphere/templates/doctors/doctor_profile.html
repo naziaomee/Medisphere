@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Jane Doe's Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f4f7f9;
+            --card-color: #ffffff;
+            --primary-color: #0077c9;
+            --primary-hover: #005f9c;
+            --accent-color: #1abc9c;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+            --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.07);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --border-radius-main: 25px;
+            --animation-speed: 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        /* Nav and Back Button */
+        .main-nav {
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .main-nav .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .main-nav .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px;
+        }
+        .main-nav .nav-links a {
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .main-nav .nav-links a:hover,
+        .main-nav .nav-links a.active {
+            color: var(--accent-color);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 40px;
+            padding: 12px 28px;
+            background-color: var(--card-color);
+            color: var(--text-dark);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all var(--animation-speed) ease;
+            box-shadow: var(--shadow-light);
+        }
+        .back-btn:hover {
+            transform: translateX(-8px) scale(1.02);
+            background-color: #eef1f3;
+        }
+        .back-btn .fas {
+            color: var(--primary-color);
+        }
+
+        /* Profile Container */
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 50px;
+            background-color: var(--card-color);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 992px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Profile Sidebar */
+        .profile-sidebar {
+            text-align: center;
+        }
+
+        .profile-photo {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 6px solid var(--primary-color);
+            box-shadow: 0 0 0 10px rgba(0, 119, 201, 0.1);
+            transition: transform var(--animation-speed) ease;
+            margin-bottom: 25px;
+        }
+        .profile-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 5px;
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 1.2rem;
+            margin: 15px 0;
+        }
+
+        .badge-list {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .badge-list li {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #eef5f9;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .badge-list li .fas {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .book-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(90deg, #0077c9, #3c8ce7);
+            color: white;
+            font-weight: 600;
+            padding: 16px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all var(--animation-speed) ease;
+            box-shadow: 0 8px 25px rgba(0, 119, 201, 0.3);
+            font-size: 1.1rem;
+        }
+        .book-btn:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(90deg, #005f9c, #0077c9);
+            box-shadow: 0 12px 35px rgba(0, 119, 201, 0.4);
+        }
+        .book-btn .fas {
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Profile Details */
+        .profile-details {
+            border-left: 1px solid #e0e6eb;
+            padding-left: 50px;
+        }
+        .profile-details h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        .details-section p {
+            margin-bottom: 25px;
+        }
+
+        .experience-list {
+            list-style: none;
+            padding: 0;
+        }
+        .experience-list li {
+            background-color: #f8fbff;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .experience-list li strong {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="logo">MediSphere</div>
+        <ul class="nav-links">
+            <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-hand-holding-medical"></i> Services</a></li>
+            <li><a class="active" href="#"><i class="fas fa-user-md"></i> Doctors</a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+            <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </nav>
+
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Go Back
+    </a>
+
+    <div class="profile-container">
+        
+        <div class="profile-sidebar">
+            <div class="profile-photo">
+                <img src="https://source.unsplash.com/250x250/?doctor,portrait,woman" alt="Dr. Jane Doe">
+            </div>
+            <div class="profile-info">
+                <h2>Dr. Jane Doe</h2>
+                <p>General Medicine Specialist</p>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i> 
+                    4.8 (215 reviews)
+                </div>
+            </div>
+
+            <ul class="badge-list">
+                <li><i class="fas fa-calendar-alt"></i> Available: Mon - Fri, 9AM - 5PM</li>
+                <li><i class="fas fa-dollar-sign"></i> Visit Fee: $500</li>
+                <li><i class="fas fa-map-marker-alt"></i> Location: City Hospital, Dhaka</li>
+                <li><i class="fas fa-phone-alt"></i> Call: +880 123 456789</li>
+            </ul>
+
+            <button class="book-btn">
+                <i class="fas fa-calendar-check"></i> Book an Appointment
+            </button>
+        </div>
+
+        <div class="profile-details">
+            <div class="details-section">
+                <h3>About Dr. Doe</h3>
+                <p>Dr. Jane Doe is a board-certified General Medicine Specialist with over 15 years of experience in diagnosing and treating a wide range of common illnesses and chronic conditions. Her patient-centered approach focuses on preventive care, health education, and building lasting relationships with her patients.</p>
+            </div>
+
+            <div class="details-section">
+                <h3>Education & Experience</h3>
+                <ul class="experience-list">
+                    <li>
+                        <strong>Medical Degree</strong>
+                        <p>Dhaka Medical College & Hospital (2008)</p>
+                    </li>
+                    <li>
+                        <strong>Residency</strong>
+                        <p>Internal Medicine, Johns Hopkins University (2012)</p>
+                    </li>
+                    <li>
+                        <strong>Clinical Experience</strong>
+                        <p>Senior Physician, Evercare Hospital Dhaka (2015 - Present)</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="details-section">
+                <h3>Areas of Expertise</h3>
+                <p>Dr. Doe specializes in:</p>
+                <ul>
+                    <li>Routine Health Checkups & Screening</li>
+                    <li>Management of Chronic Conditions (Diabetes, Hypertension)</li>
+                    <li>Infectious Disease Diagnosis & Treatment</li>
+                    <li>Preventive Medicine & Vaccinations</li>
+                    <li>Geriatric Healthcare</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

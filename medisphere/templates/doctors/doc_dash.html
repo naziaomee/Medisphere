@@ -1,0 +1,364 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  :root {
+    --bg-color: #f4f7f9;
+    --card-color: #ffffff;
+    --primary-color: #0077c9;
+    --primary-hover: #005f9c;
+    --text-dark: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border-radius: 12px;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --navbar-height: 70px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-dark); }
+  a { text-decoration: none; color: var(--primary-color); }
+
+  /* Navbar */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--navbar-height); display: flex;
+    justify-content: space-between; align-items: center;
+    padding: 0 40px; background: var(--primary-color); color: #fff; z-index: 1000;
+    box-shadow: var(--shadow);
+  }
+  nav .logo { font-family: 'Roboto Slab', serif; font-weight: 700; font-size: 28px; }
+  nav ul { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+  nav ul li a { color: #fff; font-weight: 500; transition: color 0.3s ease; }
+  nav ul li a:hover { color: #cceeff; }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed; top: var(--navbar-height); left: 0;
+    width: 250px; height: calc(100vh - var(--navbar-height));
+    background: var(--card-color); box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    padding-top: 20px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .sidebar a {
+    display: flex; align-items: center; gap: 15px;
+    padding: 15px 25px; color: var(--text-dark); font-weight: 500;
+    transition: all 0.3s ease; border-left: 5px solid transparent; position: relative;
+  }
+  .sidebar a:hover, .sidebar a.active { background: #eef1f3; color: var(--primary-color); border-left-color: var(--primary-color); }
+  .sidebar a i { font-size: 18px; color: var(--text-muted); transition: color 0.3s ease; }
+  .sidebar a:hover i, .sidebar a.active i { color: var(--primary-color); }
+
+  /* Main Content */
+  .main { margin-left: 250px; padding: 100px 40px 40px; transition: margin-left 0.3s ease; }
+
+  /* Hero Section */
+  .hero {
+    text-align: center; margin-bottom: 30px;
+    background: url('https://source.unsplash.com/1200x400/?medical,doctor') no-repeat center center/cover;
+    height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: #fff; border-radius: var(--border-radius); position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  .hero h2, .hero p { z-index: 1; }
+  .hero h2 { font-family: 'Roboto Slab', serif; font-size: 4rem; font-weight: 700; margin-bottom: 10px; line-height: 1.2; }
+  .hero p { font-size: 1.2rem; font-weight: 400; }
+
+  /* Profile Card */
+  .profile-card {
+    display: grid; grid-template-columns: 300px 1fr; gap: 3rem;
+    background: var(--card-color); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow); margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .profile-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); }
+  .photo-wrap { display: flex; justify-content: center; align-items: center; }
+  .photo { width: 250px; height: 250px; border-radius: 50%; overflow: hidden; border: 5px solid var(--primary-color); box-shadow: 0 0 0 8px rgba(0, 119, 201, 0.1); transition: transform 0.5s ease; }
+  .photo:hover { transform: scale(1.05); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .info h2 { font-family: 'Roboto Slab', serif; color: var(--primary-color); font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+  .info p { color: var(--text-muted); }
+  .fee-row { font-size: 1.1rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2rem; }
+
+  form label { display: block; margin-top: 1rem; font-weight: 600; color: var(--text-dark); }
+  form input, form select, form textarea {
+    width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #ced4da; font-size: 1rem; font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  form input:focus, form select:focus, form textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 119, 201, 0.25); }
+
+  .cta-wrap { margin-top: 2rem; display: flex; gap: 1rem; }
+  .book-btn { background: var(--primary-color); color: #fff; font-weight: 600; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+  .book-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+  /* Dashboard Cards */
+  .dashboard-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 30px; 
+  }
+  .card { background: var(--card-color); padding: 25px; border-radius: var(--border-radius); box-shadow: var(--shadow); transition: transform 0.3s ease; }
+  .card:hover { transform: translateY(-5px); }
+  .card h3 { color: var(--primary-color); margin-top: 0; }
+
+  /* Notification Badge */
+  .notif-badge { background: #ff3b3b; color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 50%; margin-left: 5px; }
+
+  /* --- NEW CSS for Notification Switches --- */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 25px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 25px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 17px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: var(--primary-color);
+  }
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+  .setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .setting-row:last-child {
+    border-bottom: none;
+  }
+  /* ------------------------------------------ */
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">MediSphere</div>
+  <ul>
+    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+    <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+    <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+  </ul>
+</nav>
+
+<div class="sidebar">
+  <a href="#" class="active"><i class="fas fa-user-md"></i> Profile</a>
+  <a href="#"><i class="fas fa-calendar-check"></i> Appointments</a>
+  <a href="#"><i class="fas fa-users"></i> Patients</a>
+  <a href="{% url 'create_prescription' %}">
+    <i class="fas fa-chart-line"></i> Provide Prescription
+    {% if notifications %}<span class="notif-badge">{{ notifications|length }}</span>{% endif %}
+  </a>
+</div>
+
+<div class="main">
+
+  <div class="hero">
+    <h2>"The greatest wealth is health."</h2>
+    <p>Your dashboard, your impact.</p>
+  </div>
+
+  <div class="dashboard-grid" style="grid-template-columns: 1fr; margin-bottom: 30px;">
+    <div class="card" style="background-color: #fff3cd; border-left: 5px solid #ffc107;">
+      <h3><i class="fas fa-bell"></i> Unread Notifications ({{ notifications|length }})</h3>
+      <ul style="margin-top: 10px; list-style: none; padding-left: 0;">
+        {% for note in notifications %}
+          <li style="padding: 10px 0; border-bottom: 1px solid #f1f1f1;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <strong style="max-width: 70%;">{{ note.text }}</strong>
+                <small style="color: #7f8c8d; font-size: 0.85rem; text-align: right;"><i class="fas fa-clock"></i> {{ note.created_at|naturaltime }}</small>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                
+                {% if note.prescription %}
+                  <a href="{% url 'create_prescription' note.prescription.id %}" 
+                    style="background: #0077c9; color: white; padding: 5px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 500;">
+                    <i class="fas fa-reply"></i> Respond
+                  </a>
+                {% endif %}
+
+                <a href="{% url 'mark_notification_read' note.id %}" 
+                    style="background: #28a745; color: white; padding: 5px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 500;">
+                    <i class="fas fa-check-circle"></i> Read
+                </a>
+            </div>
+          </li>
+        {% empty %}
+          <li style="padding: 10px 0; color: #7f8c8d; border-bottom: none;">No new requests or notifications.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="profile-card">
+    <div class="photo-wrap">
+      <div class="photo">
+        <img src="https://source.unsplash.com/250x250/?doctor,portrait" alt="Doctor Image">
+      </div>
+    </div>
+    <div class="info">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Doctor's Profile</h2>
+        <p>A caring professional dedicated to your well-being.</p>
+        <div class="fee-row"><i class="fas fa-wallet"></i> ৳ 1500 per consultation</div>
+
+        <label for="name"><i class="fas fa-user-circle"></i> Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Dr. John Doe">
+
+        <label for="specialty"><i class="fas fa-stethoscope"></i> Specialty</label>
+        <input type="text" id="specialty" name="specialty" placeholder="Cardiologist">
+
+        <label for="college"><i class="fas fa-graduation-cap"></i> Medical College</label>
+        <input type="text" id="college" name="college" placeholder="Dhaka Medical College">
+
+        <label for="bio"><i class="fas fa-file-alt"></i> Bio</label>
+        <textarea id="bio" name="bio" rows="4" placeholder="Dedicated to providing comprehensive healthcare with a patient-centered approach."></textarea>
+
+        <div class="cta-wrap">
+          <button type="submit" class="book-btn"><i class="fas fa-save"></i> Update Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    
+    <div class="card">
+      <h3><i class="fas fa-sliders-h"></i> Notification Settings</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Manage which notifications you receive.</p>
+      
+      <form method="POST" action="{% url 'doctor_dashboard' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_settings">
+
+        <div class="setting-row">
+          <span>New Prescription Requests</span>
+          <label class="switch">
+            <input type="checkbox" name="new_request" 
+                   {% if doctor.receive_new_request_notif %}checked{% endif %}>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="setting-row">
+          <span>Appointment Reminders</span>
+          <label class="switch">
+            <input type="checkbox" name="appointment_reminder"
+                   {% if doctor.receive_appointment_reminder %}checked{% endif %}>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="setting-row">
+          <span>Patient Message Alerts</span>
+          <label class="switch">
+            <input type="checkbox" name="message_alerts"
+                   {% if doctor.receive_message_alerts %}checked{% endif %}>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span>Weekly Performance Report</span>
+          <label class="switch">
+            <input type="checkbox" name="performance_report"
+                   {% if doctor.receive_performance_report %}checked{% endif %}>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div style="margin-top: 15px;">
+          <button type="submit" class="book-btn" style="width: 100%; padding: 10px; font-size: 1rem;"><i class="fas fa-save"></i> Save Preferences</button>
+        </div>
+      </form>
+    </div>
+    <div class="card">
+      <h3><i class="fas fa-chart-bar"></i> Monthly Appointments</h3>
+      <div style="max-width:500px;height:250px;margin:0 auto;">
+        <canvas id="appointmentsChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h3><i class="fas fa-star"></i> Ratings & Reviews</h3>
+      <p>Overall Rating: <strong>4.8/5.0</strong></p>
+      <p>Total Reviews: <strong>124</strong></p>
+      <div style="margin-top: 15px; color: gold;">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star-half-alt"></i>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const ctx = document.getElementById('appointmentsChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'Total Appointments',
+      data: [12, 19, 3, 5, 2, 3],
+      backgroundColor: 'rgba(0, 119, 201, 0.7)',
+      borderColor: 'rgba(0, 119, 201, 1)',
+      borderWidth: 1,
+      borderRadius: 5
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { y: { beginAtZero: true } },
+    plugins: { legend: { display: false } }
+  }
+});
+</script>
+
+</body>
+</html>

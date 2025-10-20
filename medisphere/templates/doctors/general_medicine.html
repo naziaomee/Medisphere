@@ -1,18 +1,442 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>General Medicine Specialists 🩺</h1>
-  <p>Meet our trusted doctors for internal medicine and primary healthcare.</p>
+<nav class="main-nav">
+    <div class="logo">MediSphere</div>
+    <ul class="nav-links">
+        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fas fa-hand-holding-medical"></i> Services</a></li>
+        <li><a class="active" href="#"><i class="fas fa-user-md"></i> Doctors</a></li>
+        <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+</nav>
 
-  <div class="doctor-grid">
-   
-    <button class="doctor-btn">Dr. Ayesha Rahman</button>
-    <button class="doctor-btn">Dr. Omar Hossain</button>
-    <button class="doctor-btn">Dr. Nabila Karim</button>
-    <button class="doctor-btn">Dr. Imran Chowdhury</button>
-    <button class="doctor-btn">Dr. Rifat Ahmed</button>
-    <button class="doctor-btn">Dr. Saima Khan</button>
-    <button class="doctor-btn">Dr. Anik Sarker</button>
-    <button class="doctor-btn">Dr. Tanha Murshed</button>
-  </div>
+<a href="javascript:history.back()" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Go Back
+</a>
+
+<div class="container">
+    <div class="header-content">
+        <h1>General Medicine Specialists <i class="fas fa-heartbeat primary-icon"></i></h1>
+        <p class="highlight">
+            Connect with our **trusted doctors** for internal medicine and primary healthcare.
+        </p>
+    </div>
+
+    <div class="card-grid">
+        {% for doctor in doctors %}
+            <a href="{% url 'doctor_profile' doctor.id %}" class="card">
+                <div class="card-image-wrapper">
+                    {% if doctor.image %}
+                        <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-content">
+                    <h3>{{ doctor.name }}</h3>
+                    <p class="specialty-text"><i class="fas fa-stethoscope"></i> {{ doctor.specialty }}</p>
+                    <div class="experience-badge">
+                        <i class="fas fa-calendar-alt"></i> {{ doctor.years_experience|default:"5+" }} Years Exp.
+                    </div>
+                </div>
+                <div class="card-overlay">
+                    <i class="fas fa-arrow-right view-profile-icon"></i>
+                </div>
+            </a>
+        {% empty %}
+            <p class="no-doctors">No general medicine specialists found at the moment.</p>
+        {% endfor %}
+    </div>
+
+    <div class="cta-section">
+        <h2>Can't find what you're looking for?</h2>
+        <p>Our team is ready to help you find the perfect specialist.</p>
+        <button class="contact-us-btn"><i class="fas fa-headset"></i> Contact Support</button>
+    </div>
+</div>
+
+<style>
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+    /* Color Variables */
+    :root {
+        --bg-color: #eef5f9;
+        --card-bg-start: #ffffff;
+        --card-bg-end: #f8fbff;
+        --primary-blue: #0077c9;
+        --primary-blue-dark: #005f9c;
+        --accent-teal: #1abc9c;
+        --text-dark: #2c3e50;
+        --text-muted: #7f8c8d;
+        --shadow-light: 0 5px 20px rgba(0, 0, 0, 0.08);
+        --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.15);
+        --border-radius-main: 25px;
+        --border-radius-card: 15px;
+        --animation-speed: 0.3s;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    a {
+        text-decoration: none;
+        color: var(--primary-blue);
+    }
+    
+    /* Main Navigation Bar */
+    .main-nav {
+        background-color: var(--primary-blue);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    .main-nav .logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+    .main-nav .nav-links {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 30px;
+    }
+    .main-nav .nav-links a {
+        color: white;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .main-nav .nav-links a:hover,
+    .main-nav .nav-links a.active {
+        color: var(--accent-teal);
+    }
+    .main-nav .nav-links a.active {
+        border-bottom: 2px solid var(--accent-teal);
+        padding-bottom: 5px;
+    }
+
+    /* Back Button */
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 30px 40px;
+        padding: 12px 28px;
+        background-color: var(--card-bg-start);
+        color: var(--text-dark);
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all var(--animation-speed) ease;
+        box-shadow: var(--shadow-light);
+    }
+
+    .back-btn:hover {
+        transform: translateX(-8px) scale(1.02);
+        background-color: #eef1f3;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    .back-btn .fas {
+        color: var(--primary-blue);
+    }
+
+    /* Main Container */
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 50px;
+        background: url('https://source.unsplash.com/1200x800/?medical,hospital') no-repeat center center/cover;
+        position: relative;
+        border-radius: var(--border-radius-main);
+        box-shadow: var(--shadow-medium);
+        overflow: hidden;
+    }
+
+    /* Overlay for background image */
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(240, 245, 249, 0.85), rgba(255, 255, 255, 0.95));
+        z-index: 0;
+    }
+
+    .header-content, .card-grid, .cta-section {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Header */
+    .header-content {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .header-content h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        background: linear-gradient(90deg, #3c8ce7, #0077c9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .header-content h1 .primary-icon {
+        font-size: 3rem;
+        color: var(--primary-blue);
+        vertical-align: middle;
+        text-shadow: none;
+        animation: heartbeat 1.5s infinite ease-in-out;
+    }
+
+    @keyframes heartbeat {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .highlight {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* Card Grid */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        padding: 30px 0;
+    }
+
+    /* Doctor Card */
+    .card {
+        background: linear-gradient(160deg, var(--card-bg-start), var(--card-bg-end));
+        border-radius: var(--border-radius-card);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        transition: all var(--animation-speed) ease;
+        box-shadow: var(--shadow-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+        position: relative;
+    }
+
+    .card:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: var(--shadow-medium);
+    }
+    .card:hover .card-image-wrapper::after {
+        border-color: var(--accent-teal);
+        transform: scale(1.05);
+    }
+    .card:hover .card-overlay {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .card:hover .view-profile-icon {
+        animation: bounceArrow 0.8s infinite;
+    }
+
+    @keyframes bounceArrow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    .card-image-wrapper {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-top: 30px;
+        position: relative;
+        z-index: 2;
+    }
+    /* Animated border */
+    .card-image-wrapper::after {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border: 4px solid var(--primary-blue);
+        border-radius: 50%;
+        transition: all var(--animation-speed) ease;
+        z-index: -1;
+    }
+
+    .card-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .placeholder-image {
+        background: linear-gradient(45deg, #dbe9f5, #b9d8ee);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #8fa7c2;
+    }
+
+    .placeholder-image .fas {
+        font-size: 5rem;
+    }
+
+    .card-content {
+        padding: 25px 20px 20px;
+        text-align: center;
+        flex-grow: 1;
+    }
+
+    .card-content h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .specialty-text {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--primary-blue-dark);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    .specialty-text .fas {
+        color: var(--accent-teal);
+    }
+
+    .experience-badge {
+        display: inline-flex;
+        align-items: center;
+        background-color: #e0f2f7;
+        color: var(--primary-blue);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        gap: 6px;
+        margin-top: 10px;
+        box-shadow: 0 2px 8px rgba(0, 119, 201, 0.1);
+    }
+    .experience-badge .fas {
+        color: var(--primary-blue);
+    }
+
+    .no-doctors {
+        grid-column: 1 / -1;
+        text-align: center;
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        padding: 50px;
+    }
+
+    /* Card Overlay for hover effect */
+    .card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: linear-gradient(transparent, rgba(0, 119, 201, 0.7));
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: all var(--animation-speed) ease;
+        border-radius: 0 0 var(--border-radius-card) var(--border-radius-card);
+        font-size: 1.5rem;
+    }
+
+    .view-profile-icon {
+        font-size: 2rem;
+    }
+
+    /* Call to Action Section */
+    .cta-section {
+        text-align: center;
+        margin-top: 60px;
+        padding: 40px;
+        background: linear-gradient(135deg, #e0f7fa, #c2e9fb);
+        border-radius: var(--border-radius-main);
+        box-shadow: var(--shadow-light);
+    }
+    .cta-section h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        color: var(--primary-blue-dark);
+        margin-bottom: 15px;
+    }
+    .cta-section p {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 30px;
+    }
+    .contact-us-btn {
+        background: linear-gradient(90deg, var(--primary-blue), #3c8ce7);
+        color: white;
+        padding: 15px 35px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--animation-speed) ease;
+        box-shadow: 0 8px 25px rgba(0, 119, 201, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .contact-us-btn:hover {
+        background: linear-gradient(90deg, var(--primary-blue-dark), #0077c9);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 119, 201, 0.4);
+    }
+</style>
 {% endblock %}

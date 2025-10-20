@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dental Products</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #004080;
+            padding: 20px 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 2px solid #007acc;
+            border-radius: 12px;
+            width: 300px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #003366;
+        }
+
+        .price {
+            color: #008000;
+            font-weight: bold;
+        }
+
+        .detail-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #007acc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .detail-link:hover {
+            background-color: #005f99;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dental Products</h1>
+    <div class="container">
+        {% for product in products %}
+            <div class="card">
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description|truncatewords:20 }}</p>
+                <p class="price">${{ product.price }}</p>
+                <a class="detail-link" href="{% url 'dental_detail' id=product.id %}">View Details</a>
+            </div>
+        {% empty %}
+            <p>No dental products available.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
